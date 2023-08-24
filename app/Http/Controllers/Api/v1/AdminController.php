@@ -2,20 +2,11 @@
 
 namespace App\Http\Controllers\Api\v1;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\EditUserRequest;
-use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserListingRequest;
-use App\Models\File;
+use App\Http\Requests\UserLoginRequest;
 use App\Models\User;
-use Firebase\JWT\JWT;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Redis;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 /**
  * @OA\Info(
@@ -33,9 +24,11 @@ use Illuminate\Support\Str;
  *     securityScheme="bearerAuth",
  * )
  */
-
 class AdminController extends BaseController
 {
+    /**
+     * Handles user login.
+     */
     /**
      * @OA\Post(
      *     path="/api/v1/admin/login",
@@ -48,8 +41,8 @@ class AdminController extends BaseController
      *             mediaType="application/x-www-form-urlencoded",
      *             @OA\Schema(
      *                 required={"email", "password"},
-     *                 @OA\Property(property="email", type="string", format="email", example="admin@example.com"),
-     *                 @OA\Property(property="password", type="string", format="password", example="admin123"),
+     *                 @OA\Property(property="email", type="string", format="email", example="admin@buckhill.co.uk"),
+     *                 @OA\Property(property="password", type="string", format="password", example="admin"),
      *             )
      *         )
      *     ),
@@ -65,6 +58,9 @@ class AdminController extends BaseController
     }
 
     /**
+     * Creates a new admin user
+     */
+    /**
      * @OA\Post(
      *     path="/api/v1/admin/create",
      *     operationId="adminCreateUser",
@@ -76,12 +72,14 @@ class AdminController extends BaseController
      *         @OA\MediaType(
      *             mediaType="multipart/form-data",
      *             @OA\Schema(
-     *                 required={"first_name", "last_name", "email", "password", "password_confirmation", "address", "phone_number"},
+     *                 required={"first_name", "last_name", "email", "password", "password_confirmation", "address",
+     *                 "phone_number"},
      *                 @OA\Property(property="first_name", type="string", example="test"),
      *                 @OA\Property(property="last_name", type="string", example="user"),
      *                 @OA\Property(property="email", type="string", format="email", example="test@yopmail.com"),
      *                 @OA\Property(property="password", type="string", format="password", example="admin123"),
-     *                 @OA\Property(property="password_confirmation", type="string", format="password", example="admin123"),
+     *                 @OA\Property(property="password_confirmation", type="string", format="password",
+     *                                                                example="admin123"),
      *                 @OA\Property(property="address", type="string", example="test"),
      *                 @OA\Property(property="phone_number", type="string", example="141414141414141"),
      *                 @OA\Property(property="is_marketing", type="integer", format="int32", example=0),
@@ -101,10 +99,13 @@ class AdminController extends BaseController
     }
 
     /**
+     * Edits an existing user's details.
+     */
+    /**
      * @OA\Post(
      *     path="/api/v1/admin/user-edit/{uuid}",
      *     operationId="adminEditUser",
-     *     summary="Edit User (Admin)",
+     *     summary="Edit User (non-Admin)",
      *     tags={"Admin"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
@@ -123,7 +124,8 @@ class AdminController extends BaseController
      *                 @OA\Property(property="last_name", type="string", example="user"),
      *                 @OA\Property(property="email", type="string", format="email", example="test@yopmail.com"),
      *                 @OA\Property(property="password", type="string", format="password", example="admin123"),
-     *                 @OA\Property(property="password_confirmation", type="string", format="password", example="admin123"),
+     *                 @OA\Property(property="password_confirmation", type="string", format="password",
+     *                                                                example="admin123"),
      *                 @OA\Property(property="address", type="string", example="test"),
      *                 @OA\Property(property="phone_number", type="string", example="141414141414141"),
      *                 @OA\Property(property="avatar", type="file", format="binary"),
@@ -143,10 +145,13 @@ class AdminController extends BaseController
     }
 
     /**
+     * Deletes a user account.
+     */
+    /**
      * @OA\Delete(
      *     path="/api/v1/admin/user-delete/{uuid}",
      *     operationId="adminDeleteUser",
-     *     summary="Delete User (Admin)",
+     *     summary="Delete User (non-Admin)",
      *     tags={"Admin"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
@@ -168,10 +173,13 @@ class AdminController extends BaseController
     }
 
     /**
+     * Provides user list
+     */
+    /**
      * @OA\Get(
      *     path="/api/v1/admin/user-listing",
      *     operationId="adminUserListing",
-     *     summary="User Listing (Admin)",
+     *     summary="User Listing (non-Admin)",
      *     tags={"Admin"},
      *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
@@ -211,10 +219,10 @@ class AdminController extends BaseController
     public function list(UserListingRequest $request)
     {
         // Retrieve listing parameters
-        $page = $request->input('page', 1);
-        $limit = $request->input('limit', 10);
-        $sortBy = $request->input('sort_by', 'created_at');
-        $desc = $request->input('desc', false); // Set to false by default
+        $page        = $request->input('page', 1);
+        $limit       = $request->input('limit', 10);
+        $sortBy      = $request->input('sort_by', 'created_at');
+        $desc        = $request->input('desc', false); // Set to false by default
         $isMarketing = $request->input('is_marketing', false); // Set to false by default
 
         // Build query for user listing
@@ -230,7 +238,7 @@ class AdminController extends BaseController
 
         // Validate and sanitize the sorting column
         $allowedSortColumns = ['created_at', 'last_login_at', 'first_name', 'is_marketing', 'email'];
-        $sortBy = in_array($sortBy, $allowedSortColumns) ? $sortBy : 'created_at';
+        $sortBy             = in_array($sortBy, $allowedSortColumns) ? $sortBy : 'created_at';
 
         // Fetch paginated users with the specified sorting and limiting
         $users = $query->orderBy($sortBy, $orderBy)->paginate($limit, ['*'], 'page', $page);

@@ -1,12 +1,12 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\v1\AdminController;
 use App\Http\Controllers\Api\v1\UserController;
-use App\Http\Middleware\JwtMiddleware;
 use App\Http\Middleware\AdminCheckMiddleware;
+use App\Http\Middleware\JwtMiddleware;
 use App\Http\Middleware\UserCheckMiddleware;
+use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -19,7 +19,6 @@ use App\Http\Middleware\UserCheckMiddleware;
 */
 
 Route::prefix('v1')->group(function () {
-
     // Admin routes
     Route::post('admin/login', [AdminController::class, 'login']);
 
@@ -28,7 +27,7 @@ Route::prefix('v1')->group(function () {
         Route::get('logout', [AdminController::class, 'logout']);
         Route::post('create', [AdminController::class, 'create']);
         Route::post('user-edit/{uuid}', [AdminController::class, 'edit']);
-        Route::delete('user-delete/{uuid}',[AdminController::class, 'delete']);
+        Route::delete('user-delete/{uuid}', [AdminController::class, 'delete']);
     });
 
     // User routes
@@ -38,7 +37,7 @@ Route::prefix('v1')->group(function () {
 
     Route::middleware([JwtMiddleware::class, UserCheckMiddleware::class])->prefix('user')->group(function () {
         Route::get('', [UserController::class, 'userDetails']);
-        Route::delete('',[UserController::class, 'delete']);
+        Route::delete('', [UserController::class, 'delete']);
         Route::post('create', [UserController::class, 'create']);
         Route::post('edit', [UserController::class, 'edit'])->name('edit');
         Route::get('logout', [UserController::class, 'logout']);

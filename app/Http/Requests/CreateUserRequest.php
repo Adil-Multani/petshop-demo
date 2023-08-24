@@ -19,15 +19,15 @@ class CreateUserRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
      */
-   public function rules()
+    public function rules()
     {
         return [
-            'first_name' => 'required|string',
-            'last_name' => 'required|string',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8|confirmed',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'address' => 'required|string',
+            'first_name'   => 'required|string',
+            'last_name'    => 'required|string',
+            'email'        => 'required|email|unique:users,email',
+            'password'     => 'required|string|min:8|confirmed',
+            'avatar'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'address'      => 'required|string',
             'phone_number' => 'required|string',
             'is_marketing' => 'sometimes|boolean',
         ];
@@ -36,9 +36,9 @@ class CreateUserRequest extends FormRequest
     public function messages()
     {
         return [
-            'email.unique' => 'This email address is already in use.',
-            'password.min' => 'Password must be at least 8 characters long.',
-            'password.confirmed' => 'Password confirmation does not match.',
+            'email.unique'         => 'This email address is already in use.',
+            'password.min'         => 'Password must be at least 8 characters long.',
+            'password.confirmed'   => 'Password confirmation does not match.',
             'is_marketing.boolean' => 'The marketing filter must be a boolean value.',
         ];
     }

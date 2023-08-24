@@ -21,18 +21,21 @@ class EditUserRequest extends FormRequest
      */
     public function rules()
     {
-        if($this->route('uuid')){
+        if ($this->route('uuid')) {
             $uuid = $this->route('uuid');
-        }else{
+        } else {
             $uuid = $this->input('user_uuid');
         }
+
         return [
-            'first_name' => 'required|string',
-            'last_name' => 'required|string',
-            'email' => 'required|email|unique:users,email,' . $uuid . ',uuid', // Exclude the current user from unique validation
-            'password' => 'nullable|string|min:8|confirmed', // Allow password to be nullable when not updated
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'address' => 'required|string',
+            'first_name'   => 'required|string',
+            'last_name'    => 'required|string',
+            'email'        => 'required|email|unique:users,email,' . $uuid . ',uuid',
+            // Exclude the current user from unique validation
+            'password'     => 'nullable|string|min:8|confirmed',
+            // Allow password to be nullable when not updated
+            'avatar'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'address'      => 'required|string',
             'phone_number' => 'required|string',
             'is_marketing' => 'sometimes|boolean',
         ];
@@ -41,9 +44,9 @@ class EditUserRequest extends FormRequest
     public function messages()
     {
         return [
-            'email.unique' => 'This email address is already in use.',
-            'password.min' => 'Password must be at least 8 characters long.',
-            'password.confirmed' => 'Password confirmation does not match.',
+            'email.unique'         => 'This email address is already in use.',
+            'password.min'         => 'Password must be at least 8 characters long.',
+            'password.confirmed'   => 'Password confirmation does not match.',
             'is_marketing.boolean' => 'The marketing filter must be a boolean value.',
         ];
     }

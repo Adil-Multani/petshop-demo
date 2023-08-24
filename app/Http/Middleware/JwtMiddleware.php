@@ -3,9 +3,9 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Exception;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-use Exception;
 use Illuminate\Support\Facades\Redis;
 
 class JwtMiddleware
@@ -13,7 +13,7 @@ class JwtMiddleware
     public function handle($request, Closure $next)
     {
         $token = $request->header('Authorization');
-        if (!$token) {
+        if ( ! $token) {
             return apiResponse(null, 'Token not provided', 401, false);
         }
 
@@ -22,7 +22,7 @@ class JwtMiddleware
 
         try {
             $publicKey = file_get_contents(base_path('jwtkeys/public_key.pem'));
-            $decoded = JWT::decode($token, new Key($publicKey, 'RS256'));
+            $decoded   = JWT::decode($token, new Key($publicKey, 'RS256'));
 
             if ($decoded->iss !== url('/')) {
                 return apiResponse(null, 'Invalid issuer', 401, false);
@@ -47,17 +47,18 @@ class JwtMiddleware
             }
 
             return $next($request);
-
         } catch (Exception $e) {
             return apiResponse(null, $e->getMessage(), 401, false);
         }
     }
-    private function isTokenRevoked($token)
-    {
-        return Redis::sismember('token:blacklist', $token);
-    }
+
     private function isTokenExpired($decoded)
     {
         return time() >= $decoded->exp;
+    }
+
+    private function isTokenRevoked($token)
+    {
+        return Redis::sismember('token:blacklist', $token);
     }
 }

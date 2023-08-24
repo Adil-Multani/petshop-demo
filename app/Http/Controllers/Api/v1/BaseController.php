@@ -24,7 +24,6 @@ class BaseController extends Controller
         // Fetch the user based on the provided email
         $user = User::where('is_admin', $isAdmin)->where('email', $request->input('email'))->first();
 
-
         // Verify password and existence of user
         if ( ! $user || ! password_verify($request->input('password'), $user->password)) {
             return apiResponse(null, 'Invalid credentials', 401, false);
@@ -41,6 +40,9 @@ class BaseController extends Controller
     }
 
     /**
+     * Handles user logout.
+     */
+    /**
      * @OA\Get(
      *     path="/api/v1/admin/logout",
      *     operationId="adminLogout",
@@ -51,6 +53,15 @@ class BaseController extends Controller
      *     @OA\Response(response="401", description="Unauthorized", @OA\Schema()),
      *     @OA\Response(response="403", description="Forbidden", @OA\Schema()),
      * )
+     * @OA\Get(
+     *      path="/api/v1/user/logout",
+     *      operationId="logoutUser",
+     *      summary="Logout User",
+     *      tags={"User"},
+     *      security={{"bearerAuth":{}}},
+     *      @OA\Response(response="200", description="Logged out successfully", @OA\Schema()),
+     *      @OA\Response(response="401", description="Unauthorized", @OA\Schema()),
+     *  )
      */
     public function logout(Request $request)
     {
@@ -84,9 +95,10 @@ class BaseController extends Controller
             $uuid       = Str::uuid();
             $filename   = $uuid . '.' . $avatarFile->getClientOriginalExtension();
             $filePath   = 'pet-shop/' . $filename;
-            // Store the avatar file and create associated File record
+            // Store the avatar file
             Storage::disk('public')->putFileAs('', $avatarFile, $filePath);
 
+            // create associated File record
             $file = File::create([
                 'uuid' => $uuid,
                 'name' => $avatarFile->getClientOriginalName(),
@@ -109,7 +121,6 @@ class BaseController extends Controller
     /**
      * Edits an existing user's details.
      */
-
     public function editUser(EditUserRequest $request, $uuid)
     {
         // Find the user by UUID or return a not found response
@@ -147,8 +158,10 @@ class BaseController extends Controller
             $filename   = $uuid . '.' . $avatarFile->getClientOriginalExtension();
             $filePath   = 'pet-shop/' . $filename;
 
+            // Store the avatar file
             Storage::disk('public')->putFileAs('', $avatarFile, $filePath);
 
+            // create associated File record
             $file = File::create([
                 'uuid' => $uuid,
                 'name' => $avatarFile->getClientOriginalName(),
@@ -166,6 +179,7 @@ class BaseController extends Controller
         // Return a success response
         return apiResponse(['user' => $user], 'User account edited successfully', 200, true);
     }
+
     /**
      * Deletes a user account.
      */

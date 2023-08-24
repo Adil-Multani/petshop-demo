@@ -19,11 +19,11 @@ class ResetPasswordRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
      */
-   public function rules()
+    public function rules()
     {
         return [
-            'token' => 'required|string',
-            'email' => 'required|email',
+            'token'    => 'required|string',
+            'email'    => 'required|email',
             'password' => 'required|string|min:4|confirmed',
         ];
     }
