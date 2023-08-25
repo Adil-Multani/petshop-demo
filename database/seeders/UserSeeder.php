@@ -9,6 +9,7 @@ class UserSeeder extends Seeder
 {
     public function run()
     {
+        \App\Models\User::truncate();
         // Create default admin account
         \App\Models\User::create([
             'uuid'              => \Illuminate\Support\Str::uuid(),

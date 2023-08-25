@@ -19,15 +19,5 @@ class User extends Authenticatable
         'is_marketing' => 'boolean',
     ];
 
-    // Relationships
-    public function tokens()
-    {
-        return $this->hasMany(JwtToken::class);
-    }
-
-    public function orders()
-    {
-        return $this->hasMany(Order::class);
-    }
 }
 

@@ -1,66 +1,116 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Laravel API Authentication and User Management
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This Laravel project showcases a comprehensive authentication and user management system utilizing JSON Web Tokens (JWT) for secure user interactions. The project provides a set of APIs for both administrators and users, enabling functionalities such as user login, user registration, user profile management, password reset, and more.
 
-## About Laravel
+## Requirements
+Before you start using this Laravel API Authentication and User Management project, please ensure that you have the following dependencies and software installed:
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- PHP: This project requires PHP 8.2 or later. Make sure you have PHP installed on your system and properly configured.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Composer: Composer is a dependency management tool for PHP. You'll need Composer to install the project's PHP dependencies. You can download and install Composer from https://getcomposer.org.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Redis: Redis is used for caching and session management. Install and configure Redis according to your operating system and Laravel's requirements.
 
-## Learning Laravel
+- Database: This project uses a database (such as MySQL, PostgreSQL, or SQLite) to store user information and other data. Make sure you have a database system installed and configured, and update the .env file with the appropriate database connection details.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Table of Contents
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- [Getting Started](#getting-started)
+- [Features](#features)
+- [Endpoints](#endpoints)
+- [Tests](#tests)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Laravel Sponsors
+## Getting Started
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+1. Clone the repository:
 
-### Premium Partners
+```bash
+git clone https://github.com/1986webdeveloper/buckhill-petshop
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+2. Navigate to the project directory
+```bash
+cd buckhill-petshop
+```
 
-## Contributing
+3. install the dependencies using Composer:
+```bash
+composer install
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+3. Copy the .env.example file to .env and configure your database settings and other environment variables:
+```bash
+cp .env.example .env
+```
 
-## Code of Conduct
+4. Generate an application key:
+```bash
+php artisan key:generate
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+5. Run database migrations:
+```bash
+php artisan migrate
+```
 
-## Security Vulnerabilities
+6. Run database seeder:
+```bash
+php artisan db:seed
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+7. Generate Private/Public key pair for JWT
+- new generated files will be stored in `jwtkeys` folder in projects root folder
+```bash
+openssl genpkey -algorithm RSA -out jwtkeys/private_key.pem
+```
 
-## License
+```bash
+openssl rsa -pubout -in jwtkeys/private_key.pem -out jwtkeys/public_key.pem
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+9. Serve the application:
+```bash
+php artisan serve
+```
+
+## Features
+
+- Admin/User Login: users can securely log in to the system using their credentials with JWT Authentication.
+- Password Reset and Recovery: Provide the capability for users to reset their passwords if forgotten.
+- Admin/User Logout: Allow users to securely log out of their accounts.
+- Admin User Listing: Administrators can retrieve a list of all users for management purposes with paginated data and sorting/filters option.
+- Admin Create User: Administrators can create new admin accounts.
+- Admin Edit User: Administrators can modify user details.
+- Admin Delete User: Administrators can delete user accounts.
+- User Details: Retrieve details of the currently logged-in user.
+- Edit User Profile: Allow users to edit their profile details.
+- Delete User account: Allow users to delete their account.
+- Create User: Users can create new user accounts.
+
+## The following API endpoints are available:
+
+Admin Endpoints:
+- Admin Login: `POST /api/v1/admin/login`
+- Admin User Listing: `GET /api/v1/admin/user-listing`
+- Admin Create User: `POST /api/v1/admin/create`
+- Admin Edit User: `POST /api/v1/admin/user-edit/{uuid}`
+- Admin Delete User: `DELETE /api/v1/admin/user-delete/{uuid}`
+- Admin Logout: `GET /api/v1/admin/logout`
+
+User Endpoints:
+- User Login: `POST /api/v1/user/login`
+- Forgot Password: `POST /api/v1/user/forgot-password`
+- Reset Password: `POST /api/v1/user/reset-password-token`
+- User Details: `GET /api/v1/user`
+- Create User: `POST /api/v1/user/create`
+- Edit User: `POST /api/v1/user/edit`
+- User Delete: `DELETE /api/v1/user`
+- User Logout: `GET /api/v1/user/logout`
+
+## Tests
+The project includes comprehensive test coverage to ensure functionality and reliability. To run the tests:
+```bash
+php artisan test
+```

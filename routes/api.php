@@ -18,16 +18,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('v1')->group(function () {
+Route::prefix('v1')->middleware('throttle:30,1')->group(function () {
     // Admin routes
     Route::post('admin/login', [AdminController::class, 'login']);
 
     Route::middleware([JwtMiddleware::class, AdminCheckMiddleware::class])->prefix('admin')->group(function () {
         Route::get('user-listing', [AdminController::class, 'list']);
-        Route::get('logout', [AdminController::class, 'logout']);
         Route::post('create', [AdminController::class, 'create']);
         Route::post('user-edit/{uuid}', [AdminController::class, 'edit']);
         Route::delete('user-delete/{uuid}', [AdminController::class, 'delete']);
+        Route::get('logout', [AdminController::class, 'logout']);
     });
 
     // User routes
@@ -37,9 +37,9 @@ Route::prefix('v1')->group(function () {
 
     Route::middleware([JwtMiddleware::class, UserCheckMiddleware::class])->prefix('user')->group(function () {
         Route::get('', [UserController::class, 'userDetails']);
-        Route::delete('', [UserController::class, 'delete']);
         Route::post('create', [UserController::class, 'create']);
         Route::post('edit', [UserController::class, 'edit'])->name('edit');
+        Route::delete('', [UserController::class, 'delete']);
         Route::get('logout', [UserController::class, 'logout']);
     });
 });
